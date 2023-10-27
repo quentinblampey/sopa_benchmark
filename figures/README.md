@@ -1,0 +1,1 @@
+Scripts that generates the figures of the manuscript, and save them inside the `res` directory

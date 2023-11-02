@@ -1,6 +1,8 @@
+import argparse
 import tempfile
 
 import numpy as np
+import spatialdata
 import tifffile as tf
 from sopa._sdata import get_spatial_image
 from sopa.io.explorer.images import (
@@ -27,6 +29,7 @@ def sopa_write(sdata: SpatialData, width: int):
 
     with tempfile.NamedTemporaryFile() as tmp:
         image_writer = MultiscaleImageWriter(image, pixelsize=0.2125, tile_width=1024)
+        image_writer.lazy = True
         with tf.TiffWriter(tmp, bigtiff=True) as tif:
             image_writer._write_image_level(tif, scale_index=0)
 
@@ -48,3 +51,42 @@ def normal_write(sdata: SpatialData, width: int):
                 compression="jpeg2000",
                 resolutionunit="CENTIMETER",
             )
+
+
+def main(args):
+    print("Running:", __name__, "with args:\n", args)
+    sdata = spatialdata.read_zarr(args.path)
+
+    if args.mode == "normal":
+        normal_write(sdata, args.width)
+    elif args.mode == "sopa":
+        sopa_write(sdata, args.width)
+    else:
+        raise ValueError(f"Invalid mode {args.mode}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-p",
+        "--path",
+        type=str,
+        required=True,
+        help="Path to the sdata object",
+    )
+    parser.add_argument(
+        "-w",
+        "--width",
+        type=int,
+        required=True,
+        help="Patch width",
+    )
+    parser.add_argument(
+        "-m",
+        "--mode",
+        type=str,
+        default="normal",
+        help="Either 'normal' or 'sopa'",
+    )
+
+    main(parser.parse_args())

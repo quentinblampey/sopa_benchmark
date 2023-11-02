@@ -2,10 +2,10 @@ import numpy as np
 import spatialdata
 from sopa.segmentation.aggregate import Aggregator
 
-from .timing import time
+from .timing import timer
 
 
-@time
+@timer
 def sopa_average(sdata_path: str):
     sdata = spatialdata.read_zarr(sdata_path)
 
@@ -13,7 +13,7 @@ def sopa_average(sdata_path: str):
     aggregrator.average_channels()
 
 
-@time
+@timer
 def normal_average(sdata_path: str):
     sdata = spatialdata.read_zarr(sdata_path)
 

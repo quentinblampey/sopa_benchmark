@@ -2,7 +2,7 @@ from functools import wraps
 from time import time
 
 
-def time(f):
+def timer(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         ts = time()

@@ -13,6 +13,7 @@ from sopa.io.explorer.images import (
 )
 from spatialdata import SpatialData
 
+from .timing import timer
 from .utils import crop_image
 
 
@@ -23,6 +24,7 @@ def _prepare_image(sdata: SpatialData, width: int, compute: bool = False):
     return image
 
 
+@timer
 def sopa_write(sdata: SpatialData, width: int):
     image = _prepare_image(sdata, width)
     image: MultiscaleSpatialImage = to_multiscale(image, [])
@@ -36,6 +38,7 @@ def sopa_write(sdata: SpatialData, width: int):
             image_writer._write_image_level(tif, scale_index=0)
 
 
+@timer
 def normal_write(sdata: SpatialData, width: int):
     image = _prepare_image(sdata, width, compute=True)
     image = scale_dtype(image, np.int8)

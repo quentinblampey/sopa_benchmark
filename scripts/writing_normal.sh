@@ -16,4 +16,4 @@ SDATA="/mnt/beegfs/merfish/data/liver/public/patient_1.zarr"
 WIDTH=10000
 MODE="normal"
 
-python -m sopa_benchmark.image_writing --path $SDATA -w $WIDTH -m $MODE
+python -m sopa_benchmark.image_writing -p $SDATA -w $WIDTH -m $MODE

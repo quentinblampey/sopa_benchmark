@@ -28,6 +28,7 @@ def sopa_write(sdata: SpatialData, width: int):
     image: MultiscaleSpatialImage = to_multiscale(image, [])
 
     with tempfile.NamedTemporaryFile() as tmp:
+        print(f"Writing to {tmp}")
         image_writer = MultiscaleImageWriter(image, pixelsize=0.2125, tile_width=1024)
         image_writer.lazy = True
         with tf.TiffWriter(tmp, bigtiff=True) as tif:
@@ -39,6 +40,7 @@ def normal_write(sdata: SpatialData, width: int):
     image = scale_dtype(image, np.int8)
 
     with tempfile.NamedTemporaryFile() as tmp:
+        print(f"Writing to {tmp}")
         with tf.TiffWriter(tmp, bigtiff=True) as tif:
             resolution = 1e4 / 0.2125
             tif.write(

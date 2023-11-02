@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=write
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j
-#SBATCH --mem=128G
+#SBATCH --mem=16G
 #SBATCH --partition=shortq
 
 # Load necessary modules

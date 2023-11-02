@@ -31,6 +31,7 @@ def sopa_write(sdata: SpatialData, width: int):
         print(f"Writing to {tmp}")
         image_writer = MultiscaleImageWriter(image, pixelsize=0.2125, tile_width=1024)
         image_writer.lazy = True
+        image_writer.ram_threshold_gb = None
         with tf.TiffWriter(tmp, bigtiff=True) as tif:
             image_writer._write_image_level(tif, scale_index=0)
 

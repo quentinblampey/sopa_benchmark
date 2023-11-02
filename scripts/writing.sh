@@ -10,10 +10,10 @@ module load anaconda3/2020-11
 
 source activate spatial
 
-cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark/sopa_benchmark
+cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
 SDATA="/mnt/beegfs/merfish/data/liver/public/patient_1.zarr"
 WIDTH=10000
 MODE="normal"
 
-python -u image_writing.py --path $IMAGE -w $WIDTH -m $MODE
+python -m sopa_benchmark.image_writing --path $IMAGE -w $WIDTH -m $MODE

@@ -1,28 +1,31 @@
+import argparse
+
 import numpy as np
-import spatialdata
-from sopa.segmentation.aggregate import Aggregator
+from sopa._sdata import get_spatial_image
+from sopa.segmentation import aggregate
+from sopa.utils import data
+from spatialdata import SpatialData
+from tqdm import tqdm
 
 from .timing import timer
 
 
 @timer
-def sopa_average(sdata_path: str):
-    sdata = spatialdata.read_zarr(sdata_path)
-
-    aggregrator = Aggregator(sdata)
-    aggregrator.average_channels()
+def sopa_average(sdata: SpatialData):
+    average_intensities = aggregate.average_channels(sdata)
+    print(average_intensities.shape)
 
 
 @timer
-def normal_average(sdata_path: str):
-    sdata = spatialdata.read_zarr(sdata_path)
-
-    image = ...
-    cell_mask = sdata["cellpose_masks"]
+def normal_average(sdata: SpatialData, cell_mask: np.array):
+    image = get_spatial_image(sdata)
 
     average_intensities = []
 
-    for cell_id in np.unique(cell_mask):
+    for cell_id in tqdm(np.unique(cell_mask)):
+        if cell_id == 0:
+            continue
+
         cell_id_mask = cell_mask == cell_id
         average_intensity = np.sum(image * cell_id_mask, axis=(1, 2)) / np.sum(
             cell_id_mask
@@ -30,3 +33,39 @@ def normal_average(sdata_path: str):
         average_intensities.append(average_intensity)
 
     average_intensities = np.stack(average_intensities)
+    print(average_intensities.shape)
+
+
+def main(args):
+    sdata = data.uniform(args.length, cell_masks=args.mode == "normal")
+
+    if args.mode == "sopa":
+        sopa_average(sdata)
+    elif args.mode == "normal":
+        gdf = sdata["cells"]
+        radius = np.sqrt(gdf.area / np.pi).mean()
+        xy = sdata["vertices"].compute().values
+        cell_mask = data._to_mask(args.length, xy, radius)
+        normal_average(sdata, cell_mask)
+    else:
+        raise ValueError(f"Invalid mode {args.mode}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-l",
+        "--length",
+        type=int,
+        required=True,
+        help="Width in pixels of the square",
+    )
+    parser.add_argument(
+        "-m",
+        "--mode",
+        type=str,
+        default="normal",
+        help="Either 'normal' or 'sopa'",
+    )
+
+    main(parser.parse_args())

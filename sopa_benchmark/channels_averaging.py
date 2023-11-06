@@ -12,8 +12,7 @@ from .timing import timer
 
 @timer
 def sopa_average(sdata: SpatialData):
-    average_intensities = aggregate.average_channels(sdata)
-    print(average_intensities.shape)
+    aggregate.average_channels(sdata)
 
 
 @timer
@@ -33,7 +32,6 @@ def normal_average(sdata: SpatialData, cell_mask: np.array):
         average_intensities.append(average_intensity)
 
     average_intensities = np.stack(average_intensities)
-    print(average_intensities.shape)
 
 
 def main(args):

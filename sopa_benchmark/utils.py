@@ -39,6 +39,21 @@ def crop_image(image: da.Array, width: int, compute: bool = False):
     return image
 
 
+def _get_liver():
+    DATA_DIRS = [
+        "/mnt/beegfs/merfish/data/liver/public/patient_1.zarr",
+        "~/sopa_benchmark/data/liver.zarr",
+    ]
+    for data_dir in DATA_DIRS:
+        path = Path(data_dir)
+        if path.exists():
+            return spatialdata.read_zarr(path)
+
+    raise ValueError(
+        f"Data directory {DATA_DIRS[-1]} is not existing. Create it before continuing."
+    )
+
+
 def _get_data_dir():
     DATA_DIRS = [
         "/mnt/beegfs/userdata/q_blampey/sopa_benchmark/data",

@@ -3,11 +3,11 @@ import argparse
 import numpy as np
 from sopa._sdata import get_spatial_image
 from sopa.segmentation import aggregate
-from sopa.utils import data
+from sopa.utils.data import _to_mask
 from spatialdata import SpatialData
 from tqdm import tqdm
 
-from .timing import timer
+from .utils import get_uniform, timer
 
 
 @timer
@@ -35,7 +35,7 @@ def normal_average(sdata: SpatialData, cell_mask: np.array):
 
 
 def main(args):
-    sdata = data.uniform(args.length, cell_masks=args.mode == "normal")
+    sdata = get_uniform(args.length)
 
     if args.mode == "sopa":
         sopa_average(sdata)
@@ -43,7 +43,7 @@ def main(args):
         gdf = sdata["cells"]
         radius = np.sqrt(gdf.area / np.pi).mean()
         xy = sdata["vertices"].compute().values
-        cell_mask = data._to_mask(args.length, xy, radius)
+        cell_mask = _to_mask(args.length, xy, radius)
         normal_average(sdata, cell_mask)
     else:
         raise ValueError(f"Invalid mode {args.mode}")

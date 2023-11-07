@@ -1,15 +1,14 @@
 import argparse
 
 from sopa.segmentation import aggregate
-from sopa.utils import data
 from spatialdata import SpatialData
 
-from .timing import timer
+from .utils import get_uniform, timer
 
 
 @timer
 def sopa_count(sdata: SpatialData):
-    aggregate.count_transcripts(sdata, gene_column="gene")
+    aggregate.count_transcripts(sdata, gene_column="gene", points_key="transcripts")
 
 
 @timer
@@ -23,7 +22,7 @@ def normal_count(sdata: SpatialData):
 
 
 def main(args):
-    sdata = data.uniform(args.length)
+    sdata = get_uniform(args.length)
 
     if args.mode == "normal":
         normal_count(sdata)

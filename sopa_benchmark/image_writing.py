@@ -13,8 +13,7 @@ from sopa.io.explorer.images import (
 )
 from spatialdata import SpatialData
 
-from .timing import timer
-from .utils import crop_image
+from .utils import crop_image, timer
 
 
 def _prepare_image(sdata: SpatialData, width: int, compute: bool = False):

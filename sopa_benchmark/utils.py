@@ -1,5 +1,23 @@
+from functools import wraps
+from pathlib import Path
+from time import time
+
 import dask.array as da
 import numpy as np
+import spatialdata
+from sopa.utils.data import uniform
+
+
+def timer(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        ts = time()
+        result = f(*args, **kwargs)
+        te = time()
+        print(f"func:{f.__name__} args:[{args, kwargs}] took: {te-ts} sec")
+        return result
+
+    return wrap
 
 
 def _get_start(image: da.Array, axis: int, width: int) -> int:
@@ -19,3 +37,29 @@ def crop_image(image: da.Array, width: int, compute: bool = False):
         return image.values
 
     return image
+
+
+def _get_data_dir():
+    DATA_DIRS = [
+        "/mnt/beegfs/userdata/q_blampey/sopa_benchmark/data",
+        "/Users/quentinblampey/dev/sopa_benchmark/data",
+        "~/sopa_benchmark/data",
+    ]
+    for data_dir in DATA_DIRS:
+        path = Path(data_dir)
+        if path.exists():
+            return path
+
+    raise ValueError(
+        f"Data directory {DATA_DIRS[-1]} is not existing. Create it before continuing."
+    )
+
+
+def get_uniform(length: int):
+    path = _get_data_dir() / f"uniform_{length}.zarr"
+
+    if not path.exists():
+        sdata = uniform(length)
+        sdata.write(path)
+
+    return spatialdata.read_zarr(path)

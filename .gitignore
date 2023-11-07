@@ -6,6 +6,7 @@ archive/
 explore
 sandbox
 *.html
+data
 
 # OS related
 .DS_Store

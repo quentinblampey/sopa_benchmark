@@ -8,7 +8,7 @@
 module purge
 module load anaconda3/2020-11
 
-source activate spatial
+source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 

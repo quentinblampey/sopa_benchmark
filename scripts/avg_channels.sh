@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=count
+#SBATCH --job-name=avg
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j
 #SBATCH --mem=16G
 #SBATCH --partition=shortq
@@ -8,7 +8,7 @@
 module purge
 module load anaconda3/2020-11
 
-source activate spatial
+source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 

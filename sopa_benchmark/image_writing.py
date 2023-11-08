@@ -2,7 +2,6 @@ import argparse
 import tempfile
 
 import numpy as np
-import spatialdata
 import tifffile as tf
 from sopa._sdata import get_spatial_image
 from sopa.io.explorer.images import (
@@ -13,19 +12,19 @@ from sopa.io.explorer.images import (
 )
 from spatialdata import SpatialData
 
-from .utils import crop_image, timer
+from .utils import _get_benchmark_data, crop_image, timer
 
 
-def _prepare_image(sdata: SpatialData, width: int, compute: bool = False):
+def _prepare_image(sdata: SpatialData, length: int, compute: bool = False):
     image = get_spatial_image(sdata)
-    image = crop_image(image, width, compute=compute)
+    image = crop_image(image, length, compute=compute)
     print(f"Image of shape {image.shape}")
     return image
 
 
 @timer
-def sopa_write(sdata: SpatialData, width: int):
-    image = _prepare_image(sdata, width)
+def sopa_write(sdata: SpatialData, length: int):
+    image = _prepare_image(sdata, length)
     image: MultiscaleSpatialImage = to_multiscale(image, [])
 
     with tempfile.NamedTemporaryFile() as tmp:
@@ -38,8 +37,8 @@ def sopa_write(sdata: SpatialData, width: int):
 
 
 @timer
-def normal_write(sdata: SpatialData, width: int):
-    image = _prepare_image(sdata, width, compute=True)
+def normal_write(sdata: SpatialData, length: int):
+    image = _prepare_image(sdata, length, compute=True)
     image = scale_dtype(image, np.int8)
 
     with tempfile.NamedTemporaryFile() as tmp:
@@ -60,12 +59,12 @@ def normal_write(sdata: SpatialData, width: int):
 
 def main(args):
     print("Running:", __name__, "with args:\n", args)
-    sdata = spatialdata.read_zarr(args.path)
+    sdata = _get_benchmark_data()
 
     if args.mode == "normal":
-        normal_write(sdata, args.width)
+        normal_write(sdata, args.length)
     elif args.mode == "sopa":
-        sopa_write(sdata, args.width)
+        sopa_write(sdata, args.length)
     else:
         raise ValueError(f"Invalid mode {args.mode}")
 
@@ -73,15 +72,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-p",
-        "--path",
-        type=str,
-        required=True,
-        help="Path to the sdata object",
-    )
-    parser.add_argument(
-        "-w",
-        "--width",
+        "-l",
+        "--length",
         type=int,
         required=True,
         help="Patch width",

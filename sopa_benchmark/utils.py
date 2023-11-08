@@ -22,21 +22,21 @@ def timer(f):
     return wrap
 
 
-def _get_start(image: da.Array, axis: int, width: int) -> int:
-    x0 = (image.shape[axis] - width) // 2
+def _get_start(image: da.Array, axis: int, length: int) -> int:
+    x0 = (image.shape[axis] - length) // 2
     chunks_starts = np.array(image.chunks[axis])
     if x0 <= 0 or len(chunks_starts) == 1:
         return 0
     return min(chunks_starts.cumsum(), key=lambda x: abs(x - x0))
 
 
-def crop_image(image: da.Array, width: int, compute: bool = False):
-    assert width <= image.shape[1] and width <= image.shape[2]
+def crop_image(image: da.Array, length: int, compute: bool = False):
+    assert length <= image.shape[1] and length <= image.shape[2]
 
-    y0 = _get_start(image, 1, width)
-    x0 = _get_start(image, 2, width)
+    y0 = _get_start(image, 1, length)
+    x0 = _get_start(image, 2, length)
 
-    image = image[:, y0 : y0 + width, x0 : x0 + width]
+    image = image[:, y0 : y0 + length, x0 : x0 + length]
 
     if compute:
         return image.values
@@ -44,29 +44,46 @@ def crop_image(image: da.Array, width: int, compute: bool = False):
     return image
 
 
-def crop_sdata(sdata: SpatialData, width: int):
+def crop_sdata(sdata: SpatialData, length: int):
     image = get_spatial_image(sdata)
 
-    y0 = _get_start(image, 1, width)
-    x0 = _get_start(image, 2, width)
+    y0 = _get_start(image, 1, length)
+    x0 = _get_start(image, 2, length)
 
     return sdata.query.bounding_box(
         axes=["x", "y"],
         min_coordinate=[x0, y0],
-        max_coordinate=[x0 + width, y0 + width],
+        max_coordinate=[x0 + length, y0 + length],
         target_coordinate_system=get_intrinsic_cs(sdata, image),
     )
 
 
-def _get_liver():
+def _get_benchmark_data(length: int | None = None):
+    suffix = "" if length is None else f"_{length}"
     DATA_DIRS = [
-        "/mnt/beegfs/merfish/data/liver/public/patient_1.zarr",
-        "~/sopa_benchmark/data/liver.zarr",
+        f"/mnt/beegfs/merfish/data/liver/public",
+        f"/Users/quentinblampey/dev/sopa_benchmark/data",
+        f"~/sopa_benchmark/data",
     ]
-    for data_dir in DATA_DIRS:
-        path = Path(data_dir)
+    FILENAMES = [
+        f"patient_1{suffix}.zarr",
+        f"uniform_4096{suffix}.zarr",
+        f"liver{suffix}.zarr",
+    ]
+    for data_dir, filename in zip(DATA_DIRS, FILENAMES):
+        path = Path(data_dir) / filename
         if path.exists():
             return spatialdata.read_zarr(path)
+
+    if length is not None:
+        sdata = crop_sdata(_get_benchmark_data(), length)
+
+        for data_dir, filename in zip(DATA_DIRS, FILENAMES):
+            if Path(data_dir).exists():
+                path = Path(data_dir) / filename
+                sdata.write(path)
+
+                return spatialdata.read_zarr(path)
 
     raise ValueError(
         f"Data directory {DATA_DIRS[-1]} is not existing. Create it before continuing."
@@ -94,16 +111,6 @@ def get_uniform(length: int):
 
     if not path.exists():
         sdata = uniform(length)
-        sdata.write(path)
-
-    return spatialdata.read_zarr(path)
-
-
-def get_liver_cropped(length: int = None):
-    path = _get_data_dir() / f"patient_1{'' if length is None else f'_{length}'}.zarr"
-
-    if not path.exists():
-        sdata = crop_sdata(_get_liver(), length)
         sdata.write(path)
 
     return spatialdata.read_zarr(path)

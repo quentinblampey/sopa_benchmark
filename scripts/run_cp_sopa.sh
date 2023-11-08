@@ -13,6 +13,7 @@ source activate sopa
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
 LENGTH=10000
+WIDTH=2000
 MODE="sopa"
 
-python -m sopa_benchmark.image_writing -l $LENGTH -m $MODE
+python -m sopa_benchmark.cellpose_run -l $LENGTH -m $MODE -pw $WIDTH

@@ -2,39 +2,50 @@ import argparse
 
 import geopandas as gpd
 from shapely.geometry import Polygon
+from sopa._sdata import get_spatial_image, get_transformation
 from sopa.segmentation.cellpose import cellpose_patch
 from sopa.segmentation.stainings import StainingSegmentation
 from spatialdata import SpatialData
 from spatialdata.models import ShapesModel
 
-from .utils import _get_liver
+from .utils import _get_benchmark_data, timer
 
 
 def _save_shapes(sdata: SpatialData, cells: list[Polygon], name: str) -> None:
+    image = get_spatial_image(sdata)
     gdf = gpd.GeoDataFrame(geometry=cells)
-    gdf = ShapesModel.parse(gdf)
+    gdf = ShapesModel.parse(
+        gdf, transformations=get_transformation(image, get_all=True)
+    )
     sdata.add_shapes(name, gdf)
 
 
-def normal_cellpose(sdata: SpatialData, seg: StainingSegmentation):
-    cells = seg.run_patches(10 ^ 10, 0)
-    _save_shapes(sdata, cells, f"normal")
+@timer
+def normal_cellpose(sdata: SpatialData, length: int, seg: StainingSegmentation):
+    cells = seg.run_patches(10**10, 0)
+    _save_shapes(sdata, cells, f"normal_{length}")
 
 
-def sopa_cellpose(sdata: SpatialData, width, seg: StainingSegmentation):
+@timer
+def sopa_cellpose(sdata: SpatialData, length: int, width, seg: StainingSegmentation):
+    assert width is not None
     cells = seg.run_patches(width, 200)
-    _save_shapes(sdata, cells, f"sopa_{width}")
+    _save_shapes(sdata, cells, f"sopa_{length}_{width}")
 
 
 def main(args):
-    sdata = _get_liver()
-    method = cellpose_patch(70, ["DAPI"])
+    sdata = _get_benchmark_data(args.length)
+    print(sdata)
+
+    method = cellpose_patch(70, ["DAPI"], flow_threshold=2, cellprob_threshold=-6)
     seg = StainingSegmentation(sdata, method, ["DAPI"])
 
+    length = "full" if args.length is None else args.length
+
     if args.mode == "normal":
-        normal_cellpose(sdata, seg)
+        normal_cellpose(sdata, length, seg)
     elif args.mode == "sopa":
-        sopa_cellpose(sdata, args.patch_width, seg)
+        sopa_cellpose(sdata, length, args.patch_width, seg)
     else:
         raise ValueError(f"Invalid mode {args.mode}")
 
@@ -47,6 +58,13 @@ if __name__ == "__main__":
         type=str,
         default="normal",
         help="Either 'normal' or 'sopa'",
+    )
+    parser.add_argument(
+        "-l",
+        "--length",
+        type=int,
+        default=None,
+        help="Image width",
     )
     parser.add_argument(
         "-pw",

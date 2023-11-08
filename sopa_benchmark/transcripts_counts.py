@@ -8,7 +8,7 @@ from .utils import get_uniform, timer
 
 @timer
 def sopa_count(sdata: SpatialData):
-    aggregate.count_transcripts(sdata, gene_column="gene", points_key="transcripts")
+    aggregate.count_transcripts(sdata, gene_column="genes", points_key="transcripts")
 
 
 @timer
@@ -16,7 +16,7 @@ def normal_count(sdata: SpatialData):
     sdata.aggregate(
         values="transcripts",
         by="cells",
-        value_key="gene",
+        value_key="genes",
         agg_func="count",
     )
 

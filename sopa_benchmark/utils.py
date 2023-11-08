@@ -5,7 +5,9 @@ from time import time
 import dask.array as da
 import numpy as np
 import spatialdata
+from sopa._sdata import get_intrinsic_cs, get_spatial_image
 from sopa.utils.data import uniform
+from spatialdata import SpatialData
 
 
 def timer(f):
@@ -22,7 +24,10 @@ def timer(f):
 
 def _get_start(image: da.Array, axis: int, width: int) -> int:
     x0 = (image.shape[axis] - width) // 2
-    return min(np.array(image.chunks[axis]).cumsum(), key=lambda x: abs(x - x0))
+    chunks_starts = np.array(image.chunks[axis])
+    if x0 <= 0 or len(chunks_starts) == 1:
+        return 0
+    return min(chunks_starts.cumsum(), key=lambda x: abs(x - x0))
 
 
 def crop_image(image: da.Array, width: int, compute: bool = False):
@@ -37,6 +42,20 @@ def crop_image(image: da.Array, width: int, compute: bool = False):
         return image.values
 
     return image
+
+
+def crop_sdata(sdata: SpatialData, width: int):
+    image = get_spatial_image(sdata)
+
+    y0 = _get_start(image, 1, width)
+    x0 = _get_start(image, 2, width)
+
+    return sdata.query.bounding_box(
+        axes=["x", "y"],
+        min_coordinate=[x0, y0],
+        max_coordinate=[x0 + width, y0 + width],
+        target_coordinate_system=get_intrinsic_cs(sdata, image),
+    )
 
 
 def _get_liver():
@@ -75,6 +94,16 @@ def get_uniform(length: int):
 
     if not path.exists():
         sdata = uniform(length)
+        sdata.write(path)
+
+    return spatialdata.read_zarr(path)
+
+
+def get_liver_cropped(length: int = None):
+    path = _get_data_dir() / f"patient_1{'' if length is None else f'_{length}'}.zarr"
+
+    if not path.exists():
+        sdata = crop_sdata(_get_liver(), length)
         sdata.write(path)
 
     return spatialdata.read_zarr(path)

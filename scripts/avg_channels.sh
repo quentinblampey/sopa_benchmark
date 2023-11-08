@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 #SBATCH --job-name=count
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j

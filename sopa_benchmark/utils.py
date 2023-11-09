@@ -106,6 +106,12 @@ def _get_data_dir():
     )
 
 
+def _get_baysor_dirs(name: str) -> Path:
+    path = _get_data_dir() / "baysor_dirs" / name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 def get_uniform(length: int):
     path = _get_data_dir() / f"uniform_{length}.zarr"
 

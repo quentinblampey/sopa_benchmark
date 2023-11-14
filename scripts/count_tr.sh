@@ -12,7 +12,7 @@ source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
-LENGTH=1024
+LENGTH=16384
 MODE="sopa"
 
 python -m sopa_benchmark.transcripts_counts -l $LENGTH -m $MODE

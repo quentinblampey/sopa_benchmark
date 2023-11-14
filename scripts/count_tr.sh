@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=count
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j
-#SBATCH --mem=16G
+#SBATCH --mem=32G
 #SBATCH --partition=shortq
 
 # Load necessary modules
@@ -12,7 +12,7 @@ source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
-LENGTH=16384
+LENGTH=8192
 MODE="sopa"
 
 python -m sopa_benchmark.transcripts_counts -l $LENGTH -m $MODE

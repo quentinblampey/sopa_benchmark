@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=gen
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j
-#SBATCH --mem=512G
+#SBATCH --mem=256G
 #SBATCH --partition=mediumq
 
 # Load necessary modules

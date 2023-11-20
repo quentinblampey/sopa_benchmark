@@ -79,7 +79,7 @@ def _get_benchmark_data(length: int | None = None):
         sdata = crop_sdata(_get_benchmark_data(), length)
 
         image_key, image = get_spatial_image(sdata, return_key=True)
-        image.rechunk(image.chunksize)
+        image.data.rechunk(image.chunksize)
 
         for data_dir, filename in zip(DATA_DIRS, FILENAMES):
             if Path(data_dir).exists():

@@ -119,7 +119,7 @@ def get_uniform(length: int):
     path = _get_data_dir() / f"uniform_{length}.zarr"
 
     if not path.exists():
-        sdata = uniform(length=length, cell_density=5e-5)
+        sdata = uniform(length=length, cell_density=5e-5, apply_blur=False)
         sdata.write(path)
 
     return spatialdata.read_zarr(path)

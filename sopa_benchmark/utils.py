@@ -78,6 +78,9 @@ def _get_benchmark_data(length: int | None = None):
     if length is not None:
         sdata = crop_sdata(_get_benchmark_data(), length)
 
+        image_key, image = get_spatial_image(sdata, return_key=True)
+        image.rechunk(image.chunksize)
+
         for data_dir, filename in zip(DATA_DIRS, FILENAMES):
             if Path(data_dir).exists():
                 path = Path(data_dir) / filename
@@ -116,7 +119,7 @@ def get_uniform(length: int):
     path = _get_data_dir() / f"uniform_{length}.zarr"
 
     if not path.exists():
-        sdata = uniform(length, cell_density=5e-5)
+        sdata = uniform(length=length, cell_density=5e-5)
         sdata.write(path)
 
     return spatialdata.read_zarr(path)

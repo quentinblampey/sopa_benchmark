@@ -22,21 +22,10 @@ def timer(f):
     return wrap
 
 
-def _get_start(image: da.Array, axis: int, length: int) -> int:
-    x0 = (image.shape[axis] - length) // 2
-    chunks_starts = np.array(image.chunks[axis])
-    if x0 <= 0 or len(chunks_starts) == 1:
-        return 0
-    return min(chunks_starts.cumsum(), key=lambda x: abs(x - x0))
-
-
 def crop_image(image: da.Array, length: int, compute: bool = False):
     assert length <= image.shape[1] and length <= image.shape[2]
 
-    y0 = _get_start(image, 1, length)
-    x0 = _get_start(image, 2, length)
-
-    image = image[:, y0 : y0 + length, x0 : x0 + length]
+    image = image[:, :length, :length]
 
     if compute:
         return image.values
@@ -47,13 +36,10 @@ def crop_image(image: da.Array, length: int, compute: bool = False):
 def crop_sdata(sdata: SpatialData, length: int):
     image = get_spatial_image(sdata)
 
-    y0 = _get_start(image, 1, length)
-    x0 = _get_start(image, 2, length)
-
     return sdata.query.bounding_box(
         axes=["x", "y"],
-        min_coordinate=[x0, y0],
-        max_coordinate=[x0 + length, y0 + length],
+        min_coordinate=[0, 0],
+        max_coordinate=[length, length],
         target_coordinate_system=get_intrinsic_cs(sdata, image),
     )
 
@@ -77,9 +63,6 @@ def _get_benchmark_data(length: int | None = None):
 
     if length is not None:
         sdata = crop_sdata(_get_benchmark_data(), length)
-
-        image_key, image = get_spatial_image(sdata, return_key=True)
-        image.data.rechunk(image.data.chunksize)
 
         for data_dir, filename in zip(DATA_DIRS, FILENAMES):
             if Path(data_dir).exists():

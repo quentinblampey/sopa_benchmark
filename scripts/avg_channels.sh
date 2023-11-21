@@ -12,7 +12,7 @@ source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
-LENGTH=1024
+LENGTH=8192
 MODE="sopa"
 
 python -m sopa_benchmark.channels_averaging -l $LENGTH -m $MODE

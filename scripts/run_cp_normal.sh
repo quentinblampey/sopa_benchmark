@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=write
+#SBATCH --job-name=cp
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j
 #SBATCH --mem=16G
 #SBATCH --partition=shortq
@@ -12,7 +12,7 @@ source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
-LENGTH=10000
+LENGTH=8192
 MODE="normal"
 
 python -m sopa_benchmark.cellpose_run -l $LENGTH -m $MODE

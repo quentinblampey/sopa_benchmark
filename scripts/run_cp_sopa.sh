@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=write
+#SBATCH --job-name=wrcpite
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j
 #SBATCH --mem=16G
 #SBATCH --partition=shortq
@@ -12,7 +12,7 @@ source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
-LENGTH=10000
+LENGTH=8192
 WIDTH=2000
 MODE="sopa"
 

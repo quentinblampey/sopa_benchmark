@@ -12,7 +12,7 @@ source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
-LENGTH=10000
+LENGTH=8192
 MODE="normal"
 
 python -m sopa_benchmark.image_writing -l $LENGTH -m $MODE

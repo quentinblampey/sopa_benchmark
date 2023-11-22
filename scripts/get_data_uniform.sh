@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=gen
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j
-#SBATCH --mem=256G
+#SBATCH --mem=900G
 #SBATCH --partition=mediumq
 
 # Load necessary modules
@@ -12,4 +12,4 @@ source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
-python -m sopa_benchmark.get_all_benchmark_data
+python -u -m sopa_benchmark.get_datasets --mode uniform

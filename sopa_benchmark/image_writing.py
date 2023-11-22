@@ -12,7 +12,7 @@ from sopa.io.explorer.images import (
 )
 from spatialdata import SpatialData
 
-from .utils import _get_benchmark_data, crop_image, timer
+from .utils import crop_image, get_benchmark_data, timer
 
 
 def _prepare_image(sdata: SpatialData, length: int, compute: bool = False):
@@ -59,7 +59,7 @@ def normal_write(sdata: SpatialData, length: int):
 
 def main(args):
     print("Running:", __name__, "with args:\n", args)
-    sdata = _get_benchmark_data()
+    sdata = get_benchmark_data()
 
     if args.mode == "normal":
         normal_write(sdata, args.length)

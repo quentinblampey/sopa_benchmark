@@ -8,7 +8,7 @@ from sopa.segmentation.stainings import StainingSegmentation
 from spatialdata import SpatialData
 from spatialdata.models import ShapesModel
 
-from .utils import _get_benchmark_data, timer
+from .utils import get_benchmark_data, timer
 
 
 def _save_shapes(sdata: SpatialData, cells: list[Polygon], name: str) -> None:
@@ -34,7 +34,7 @@ def sopa_cellpose(sdata: SpatialData, length: int, width, seg: StainingSegmentat
 
 
 def main(args):
-    sdata = _get_benchmark_data(args.length)
+    sdata = get_benchmark_data(args.length)
     print(sdata)
 
     method = cellpose_patch(70, ["DAPI"], flow_threshold=2, cellprob_threshold=-6)

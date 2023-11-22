@@ -40,11 +40,11 @@ def crop_sdata(sdata: SpatialData, length: int):
         axes=["x", "y"],
         min_coordinate=[0, 0],
         max_coordinate=[length, length],
-        target_coordinate_system=get_intrinsic_cs(sdata, image),
+        target_coordinate_system="microns",
     )
 
 
-def _get_benchmark_data(length: int | None = None):
+def get_benchmark_data(length: int | None = None):
     suffix = "" if length is None else f"_{length}"
     DATA_DIRS = [
         f"/mnt/beegfs/merfish/data/liver/public",
@@ -62,7 +62,7 @@ def _get_benchmark_data(length: int | None = None):
             return spatialdata.read_zarr(path)
 
     if length is not None:
-        sdata = crop_sdata(_get_benchmark_data(), length)
+        sdata = crop_sdata(get_benchmark_data(), length)
 
         for data_dir, filename in zip(DATA_DIRS, FILENAMES):
             if Path(data_dir).exists():
@@ -102,7 +102,9 @@ def get_uniform(length: int):
     path = _get_data_dir() / f"uniform_{length}.zarr"
 
     if not path.exists():
-        sdata = uniform(length=length, cell_density=5e-5, apply_blur=False)
+        sdata = uniform(
+            length=length, cell_density=5e-5, apply_blur=False, save_vertices=True
+        )
         sdata.write(path)
 
     return spatialdata.read_zarr(path)

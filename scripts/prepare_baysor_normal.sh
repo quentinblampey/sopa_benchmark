@@ -15,4 +15,4 @@ cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 LENGTH=8192
 MODE="normal"
 
-python -m sopa_benchmark.cellpose_run -l $LENGTH -m $MODE
+python -m sopa_benchmark.prepare_baysor -l $LENGTH -m $MODE

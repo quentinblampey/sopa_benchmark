@@ -16,4 +16,4 @@ LENGTH=8192
 MODE="sopa"
 WIDTH=1000
 
-python -m sopa_benchmark.cellpose_run -l $LENGTH -m $MODE -pw $WIDTH
+python -m sopa_benchmark.prepare_baysor -l $LENGTH -m $MODE -pw $WIDTH

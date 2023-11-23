@@ -31,6 +31,8 @@ def normal_average(sdata: SpatialData, cell_mask: np.array):
         )
         average_intensities.append(average_intensity)
 
+        del cell_id_mask
+
     average_intensities = np.stack(average_intensities)
 
 

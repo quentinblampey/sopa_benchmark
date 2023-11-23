@@ -34,8 +34,6 @@ def crop_image(image: da.Array, length: int, compute: bool = False):
 
 
 def crop_sdata(sdata: SpatialData, length: int):
-    image = get_spatial_image(sdata)
-
     return sdata.query.bounding_box(
         axes=["x", "y"],
         min_coordinate=[0, 0],

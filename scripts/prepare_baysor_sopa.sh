@@ -14,6 +14,6 @@ cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
 LENGTH=8192
 MODE="sopa"
-WIDTH=1000
+WIDTH=9000
 
 python -m sopa_benchmark.prepare_baysor -l $LENGTH -m $MODE -pw $WIDTH

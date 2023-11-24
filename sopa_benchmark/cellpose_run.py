@@ -7,17 +7,20 @@ from sopa.segmentation.cellpose import cellpose_patch
 from sopa.segmentation.stainings import StainingSegmentation
 from spatialdata import SpatialData
 from spatialdata.models import ShapesModel
+from tqdm import tqdm
 
 from .utils import get_benchmark_data, timer
 
 
-def _save_shapes(sdata: SpatialData, cells: list[Polygon], name: str) -> None:
+def _save_shapes(
+    sdata: SpatialData, cells: list[Polygon], name: str, overwrite: bool = False
+) -> None:
     image = get_spatial_image(sdata)
     gdf = gpd.GeoDataFrame(geometry=cells)
     gdf = ShapesModel.parse(
         gdf, transformations=get_transformation(image, get_all=True)
     )
-    sdata.add_shapes(name, gdf)
+    sdata.add_shapes(name, gdf, overwrite=overwrite)
 
 
 @timer
@@ -29,8 +32,12 @@ def normal_cellpose(sdata: SpatialData, length: int, seg: StainingSegmentation):
 @timer
 def sopa_cellpose(sdata: SpatialData, length: int, width, seg: StainingSegmentation):
     assert width is not None
-    cells = seg.run_patches(width, 200)
-    _save_shapes(sdata, cells, f"sopa_{length}_{width}")
+    cells = [
+        cell
+        for patch in tqdm(seg.patches.polygons, desc="Run on patches")
+        for cell in seg._run_patch(patch)
+    ]
+    _save_shapes(sdata, cells, f"sopa_{length}_{width}", overwrite=True)
 
 
 def main(args):

@@ -7,6 +7,8 @@ explore
 sandbox
 *.html
 data
+figures/*.csv
+figures/*.h5ad
 
 # OS related
 .DS_Store

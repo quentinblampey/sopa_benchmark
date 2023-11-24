@@ -11,4 +11,4 @@ LENGTH=8192
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark/data/baysor_dirs/normal_$LENGTH
 
-/mnt/beegfs/merfish/bin/baysor/bin/baysor run --save-polygons GeoJSON -c config.toml transcripts.csv
+time /mnt/beegfs/merfish/bin/baysor/bin/baysor run --save-polygons GeoJSON -c config.toml transcripts.csv

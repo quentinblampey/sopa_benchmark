@@ -25,9 +25,9 @@ def normal_average(sdata: SpatialData, cell_mask: np.ndarray):
         if cell_id == 0:
             continue
 
-        cell_id_mask = cell_mask == cell_id
-        average_intensity = np.sum(image * cell_id_mask, axis=(1, 2)) / np.sum(
-            cell_id_mask
+        where = np.where(cell_mask == cell_id)
+        average_intensity = np.sum(image[:, where[0], where[1]].sum(axis=1)) / max(
+            1, len(where[0])
         )
         average_intensities.append(average_intensity)
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=gen
 #SBATCH --output=/mnt/beegfs/userdata/q_blampey/.jobs_outputs/%j
-#SBATCH --mem=900G
-#SBATCH --partition=mediumq
+#SBATCH --mem=128G
+#SBATCH --partition=shortq
 
 # Load necessary modules
 module purge

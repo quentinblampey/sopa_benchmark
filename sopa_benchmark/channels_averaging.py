@@ -17,7 +17,7 @@ def sopa_average(sdata: SpatialData):
 
 @timer
 def normal_average(sdata: SpatialData, cell_mask: np.ndarray):
-    image = get_spatial_image(sdata).data.values
+    image = get_spatial_image(sdata).data.compute()
     print(image)
 
     average_intensities = []

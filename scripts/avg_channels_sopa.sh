@@ -18,4 +18,4 @@ echo Running with LENGTH=$LENGTH
 
 MODE="sopa"
 
-python -m sopa_benchmark.channels_averaging -l $LENGTH -m $MODE
+python -u -m sopa_benchmark.channels_averaging -l $LENGTH -m $MODE

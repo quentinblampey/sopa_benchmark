@@ -18,4 +18,4 @@ echo Running with LENGTH=$LENGTH
 
 MODE="normal"
 
-python -m sopa_benchmark.image_writing -l $LENGTH -m $MODE
+python -u -m sopa_benchmark.image_writing -l $LENGTH -m $MODE

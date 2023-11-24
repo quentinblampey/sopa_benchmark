@@ -19,4 +19,4 @@ echo Running with LENGTH=$LENGTH
 MODE="sopa"
 WIDTH=9000
 
-python -m sopa_benchmark.prepare_baysor -l $LENGTH -m $MODE -pw $WIDTH
+python -u -m sopa_benchmark.prepare_baysor -l $LENGTH -m $MODE -pw $WIDTH

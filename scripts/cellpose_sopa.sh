@@ -19,4 +19,4 @@ echo Running with LENGTH=$LENGTH
 WIDTH=2000
 MODE="sopa"
 
-python -m sopa_benchmark.cellpose_run -l $LENGTH -m $MODE -pw $WIDTH
+python -u -m sopa_benchmark.cellpose_run -l $LENGTH -m $MODE -pw $WIDTH

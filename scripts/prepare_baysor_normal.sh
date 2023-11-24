@@ -18,4 +18,4 @@ echo Running with LENGTH=$LENGTH
 
 MODE="normal"
 
-python -m sopa_benchmark.prepare_baysor -l $LENGTH -m $MODE
+python -u -m sopa_benchmark.prepare_baysor -l $LENGTH -m $MODE

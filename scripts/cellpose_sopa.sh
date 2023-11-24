@@ -16,7 +16,7 @@ DEFAULT_LENGTH=8192
 LENGTH=${1:-$DEFAULT_LENGTH}
 echo Running with LENGTH=$LENGTH
 
-WIDTH=2000
+WIDTH=4000
 MODE="sopa"
 
 python -u -m sopa_benchmark.cellpose_run -l $LENGTH -m $MODE -pw $WIDTH

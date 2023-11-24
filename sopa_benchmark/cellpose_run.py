@@ -4,6 +4,7 @@ import geopandas as gpd
 from shapely.geometry import Polygon
 from sopa._sdata import get_spatial_image, get_transformation
 from sopa.segmentation.cellpose import cellpose_patch
+from sopa.segmentation.patching import Patches2D
 from sopa.segmentation.stainings import StainingSegmentation
 from spatialdata import SpatialData
 from spatialdata.models import ShapesModel
@@ -32,12 +33,14 @@ def normal_cellpose(sdata: SpatialData, length: int, seg: StainingSegmentation):
 @timer
 def sopa_cellpose(sdata: SpatialData, length: int, width, seg: StainingSegmentation):
     assert width is not None
+
+    seg.patches = Patches2D(seg.sdata, seg.image_key, width, 100)
     cells = [
         cell
         for patch in tqdm(seg.patches.polygons, desc="Run on patches")
         for cell in seg._run_patch(patch)
     ]
-    _save_shapes(sdata, cells, f"sopa_{length}_{width}", overwrite=True)
+    _save_shapes(sdata, cells, f"sopa_{length}_{width}")
 
 
 def main(args):

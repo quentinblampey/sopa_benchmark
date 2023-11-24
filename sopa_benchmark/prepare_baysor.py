@@ -16,7 +16,7 @@ baysor_config = {
         "x": "x",
         "y": "y",
         "z": "z",
-        "gene": "gene",
+        "gene": "genes",
         "min_molecules_per_gene": 0,
         "min_molecules_per_segment": 3,
         "confidence_nn_id": 6,

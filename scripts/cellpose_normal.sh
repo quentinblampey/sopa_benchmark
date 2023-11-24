@@ -12,7 +12,10 @@ source activate sopa
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark
 
-LENGTH=8192
+DEFAULT_LENGTH=8192
+LENGTH=${1:-$DEFAULT_LENGTH}
+echo Running with LENGTH=$LENGTH
+
 MODE="normal"
 
 python -m sopa_benchmark.cellpose_run -l $LENGTH -m $MODE

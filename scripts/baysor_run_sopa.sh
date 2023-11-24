@@ -7,7 +7,10 @@
 # Load necessary modules
 module purge
 
-LENGTH=8192
+DEFAULT_LENGTH=8192
+LENGTH=${1:-$DEFAULT_LENGTH}
+echo Running with LENGTH=$LENGTH
+
 WIDTH=9000
 
 cd /mnt/beegfs/userdata/q_blampey/sopa_benchmark/data/baysor_dirs/sopa_${LENGTH}_$WIDTH/0

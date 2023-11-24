@@ -101,7 +101,11 @@ def get_uniform(length: int):
 
     if not path.exists():
         sdata = uniform(
-            length=length, cell_density=5e-5, apply_blur=False, save_vertices=True
+            length=length,
+            cell_density=5e-5,
+            apply_blur=False,
+            save_vertices=True,
+            n_points_per_cell=100,
         )
         sdata.write(path)
 

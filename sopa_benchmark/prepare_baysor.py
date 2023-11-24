@@ -11,7 +11,6 @@ from .utils import _get_baysor_dirs, get_uniform, timer
 
 baysor_config = {
     "data": {
-        "exclude_genes": "Blank*",
         "force_2d": True,
         "min_molecules_per_cell": 10,
         "x": "x",
@@ -23,7 +22,7 @@ baysor_config = {
         "confidence_nn_id": 6,
     },
     "segmentation": {
-        "scale": 6.25,
+        "scale": 56,  # 6.25
         "scale_std": "25%",
         "prior_segmentation_confidence": 0.75,
         "estimate_scale_from_centers": False,
@@ -54,7 +53,7 @@ def sopa_baysor(sdata: SpatialData, length: int, width):
 
     df_key = "transcripts"
     baysor_temp_dir = _get_baysor_dirs(f"sopa_{length}_{width}")
-    patches = Patches2D(sdata, df_key, width, 20)
+    patches = Patches2D(sdata, df_key, width, 200)
     valid_indices = patches.patchify_transcripts(baysor_temp_dir)
 
     for i in range(len(patches)):

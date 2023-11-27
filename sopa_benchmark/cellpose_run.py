@@ -26,8 +26,13 @@ def _save_shapes(
 
 @timer
 def normal_cellpose(sdata: SpatialData, length: int, seg: StainingSegmentation):
-    cells = seg.run_patches(10**10, 0)
-    _save_shapes(sdata, cells, f"normal_{length}")
+    seg.patches = Patches2D(seg.sdata, seg.image_key, 10**10, 0)
+    cells = [
+        cell
+        for patch in tqdm(seg.patches.polygons, desc="Run on patches")
+        for cell in seg._run_patch(patch)
+    ]
+    _save_shapes(sdata, cells, f"normal_{length}", overwrite=True)
 
 
 @timer
@@ -40,7 +45,7 @@ def sopa_cellpose(sdata: SpatialData, length: int, width, seg: StainingSegmentat
         for patch in tqdm(seg.patches.polygons, desc="Run on patches")
         for cell in seg._run_patch(patch)
     ]
-    _save_shapes(sdata, cells, f"sopa_{length}_{width}")
+    _save_shapes(sdata, cells, f"sopa_{length}_{width}", overwrite=True)
 
 
 def main(args):

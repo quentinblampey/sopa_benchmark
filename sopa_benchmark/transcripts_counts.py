@@ -3,7 +3,7 @@ import argparse
 from sopa.segmentation import aggregate
 from spatialdata import SpatialData
 
-from .utils import get_uniform, timer
+from .utils import get_uniform2, timer
 
 
 @timer
@@ -22,7 +22,7 @@ def normal_count(sdata: SpatialData):
 
 
 def main(args):
-    sdata = get_uniform(args.length)
+    sdata = get_uniform2(args.length)
 
     if args.mode == "normal":
         normal_count(sdata)

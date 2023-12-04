@@ -7,7 +7,7 @@ from sopa.segmentation.baysor.prepare import to_toml
 from sopa.segmentation.patching import Patches2D
 from spatialdata import SpatialData
 
-from .utils import _get_baysor_dirs, get_uniform, timer
+from .utils import _get_baysor_dirs, get_uniform2, timer
 
 baysor_config = {
     "data": {
@@ -65,7 +65,7 @@ def sopa_baysor(sdata: SpatialData, length: int, width):
 
 
 def main(args):
-    sdata = get_uniform(args.length)
+    sdata = get_uniform2(args.length)
     print(sdata)
 
     length = "full" if args.length is None else args.length

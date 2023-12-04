@@ -1,6 +1,6 @@
 import argparse
 
-from .utils import get_benchmark_data, get_uniform
+from .utils import get_benchmark_data, get_uniform, get_uniform2
 
 START_DIM = 1024
 
@@ -10,6 +10,10 @@ def main(args):
         for scale in range(args.scales):
             print(f"Saving scale {scale}")
             get_uniform(START_DIM * 2**scale)
+    elif args.mode == "uniform2":
+        for scale in range(args.scales):
+            print(f"Saving scale {scale}")
+            get_uniform2(START_DIM * 2**scale)
     else:
         for scale in range(args.scales):
             print(f"Saving scale {scale}")

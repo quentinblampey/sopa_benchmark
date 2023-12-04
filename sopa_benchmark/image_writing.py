@@ -12,19 +12,12 @@ from sopa.io.explorer.images import (
 )
 from spatialdata import SpatialData
 
-from .utils import crop_image, get_benchmark_data, timer
-
-
-def _prepare_image(sdata: SpatialData, length: int, compute: bool = False):
-    image = get_spatial_image(sdata)
-    image = crop_image(image, length, compute=compute)
-    print(f"Image of shape {image.shape}")
-    return image
+from .utils import get_uniform, timer
 
 
 @timer
-def sopa_write(sdata: SpatialData, length: int):
-    image = _prepare_image(sdata, length)
+def sopa_write(sdata: SpatialData):
+    image = get_spatial_image(sdata)
     image: MultiscaleSpatialImage = to_multiscale(image, [])
 
     with tempfile.NamedTemporaryFile() as tmp:
@@ -37,8 +30,8 @@ def sopa_write(sdata: SpatialData, length: int):
 
 
 @timer
-def normal_write(sdata: SpatialData, length: int):
-    image = _prepare_image(sdata, length, compute=True)
+def normal_write(sdata: SpatialData):
+    image = get_spatial_image(sdata).values
     image = scale_dtype(image, np.int8)
 
     with tempfile.NamedTemporaryFile() as tmp:
@@ -59,12 +52,12 @@ def normal_write(sdata: SpatialData, length: int):
 
 def main(args):
     print("Running:", __name__, "with args:\n", args)
-    sdata = get_benchmark_data()
+    sdata = get_uniform(args.length)
 
     if args.mode == "normal":
-        normal_write(sdata, args.length)
+        normal_write(sdata)
     elif args.mode == "sopa":
-        sopa_write(sdata, args.length)
+        sopa_write(sdata)
     else:
         raise ValueError(f"Invalid mode {args.mode}")
 

@@ -9,6 +9,7 @@ sandbox
 data
 figures/*.csv
 figures/*.h5ad
+sopa_16384_9000
 
 # OS related
 .DS_Store
